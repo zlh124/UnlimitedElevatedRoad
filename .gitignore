@@ -1,0 +1,15 @@
+# Build / IDE artifacts
+bin/
+obj/
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Created by the toolchain's IL post-processor (ModPostProcessor) / Unity
+Library/
+*.pid
+
+# Scratch folders used while diffing the game's assemblies
+.apibrowse/

@@ -1,19 +1,22 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
 		<TargetFramework>net472</TargetFramework>
 		<Configurations>Debug;Release</Configurations>
 		
-		<!--The folder where Game.dll is located. Set it only if the game is not installed in the default location, otherwise keep it empty-->
-		<CustomManagedPath>C:\Program Files (x86)\Steam\steamapps\common\Cities Skylines II\Cities2_Data\Managed</CustomManagedPath>
+		<!--The folder where Game.dll is located. Set it only if the game is not installed in the default location, otherwise keep it empty.
+		    The CSII modding toolchain normally resolves it on its own through the CSII_INSTALLATIONPATH /
+		    CSII_MANAGEDPATH environment variables set by the in-game Options -> Modding panel, so leaving this
+		    empty is the recommended setting. If it has to be set by hand, point it at
+		    "<game install>\Cities2_Data\Managed", e.g. "D:\apps\Steam\steamapps\common\Cities Skylines II\Cities2_Data\Managed".-->
+		<CustomManagedPath></CustomManagedPath>
 		
-		<!--Path to the text file where PDX account data is stored which is required to publish the mod-->
-		<!--Keep it outside of project in order to not commit it or share accidentally-->
-		<!--The file should contain 2 lines:-->
-		<!--Your.PDX@Account.login-->
-		<!--Your-PDX-Account-Pa$$word-->
-		<PDXAccountDataPath>C:\Users\Jimmyok\.pdx_account.txt</PDXAccountDataPath>
+		<!--Path to a text file with PDX account credentials, only needed by very old toolchain versions.
+		    Current toolchains authenticate through the PDX session of the running game, so this stays empty.
+		    If a toolchain build ever asks for it, create the file OUTSIDE the repository (never commit it)
+		    with two lines - "Your.PDX@Account.login" and the password - and set the path here.-->
+		<PDXAccountDataPath></PDXAccountDataPath>
 		
 		<!--The file where mod information which is required for publishing mod on PDX mods are stored-->
 		<PublishConfigurationPath>Properties\PublishConfiguration.xml</PublishConfigurationPath>

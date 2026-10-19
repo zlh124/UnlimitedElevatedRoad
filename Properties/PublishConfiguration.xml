@@ -1,18 +1,16 @@
-﻿<Publish>
-	<!--Id must be set in order to update existed mod. it is not required for publishing mod for the first time-->
-	<ModId Value="77597" />
+<Publish>
+	<!--ModId = the id Paradox Mods assigned to this continuation on its first upload. Required for the
+	    NewVersion / Update profiles. It is NOT the original mod's id (77597) - that one belongs to the
+	    original author's account and cannot be updated from here.-->
+	<ModId Value="164020" />
 	<!--Name of the mod to display to players-->
-	<DisplayName Value="ConfigurableElevatedRoad" />
-	<!--Short description of the mod-->
-	<ShortDescription Value="In-game configurable options for elevated road construction, including pillar interval, edge length, steepness restrictions and no pillar/no height restriction construction mode." />
+	<DisplayName Value="Configurable Elevated Road (Continued)" />
+	<!--Short description of the mod. PDX Mods limit: 1-200 characters (validated by ModPublisher).-->
+	<ShortDescription Value="Unofficial compatibility update of Configurable Elevated Road: pillar interval, edge length, steepness, no-pillar and no-height modes, all configurable in-game." />
 	<!--Long description of the mod. Single line or multi line. Supports minimal markdown subset-->
 	<!--LongDescription Value="This is a long description" /-->
 	<LongDescription>
-If you want anarchy around elevated road construction,this mod suits you. With this mod, you are able to construction elevated roads/bridges/intersections at ease, free from the annoying pillars/steepness/length restrictions, and even build a roller coaster of road!
-
-## Latest bug fix
-
-* Fixed a bug that leads to all sorts of weird behaviors when updating existing roads.
+**This is an unofficial continuation of "ConfigurableElevatedRoad" by Jimmyokok.** The original mod is no longer maintained and stopped loading after a game update. This version rebuilds it against the current game assemblies and keeps the same features, options layout and settings file. All credits for the original design and implementation go to the original author.
 
 ## Feature
 
@@ -23,20 +21,26 @@ If you want anarchy around elevated road construction,this mod suits you. With t
 * Optional no steepness limitation construction mode.
 * One-click options to restore vanilla/mod default settings.
 * The above settings all appear in the game setting menu and are recommended to be configured in-game. The changes you've made **immediately take effect** and persist in the configuration file.
-	
-## Coming soon
 
-* In-game switches for no pillar/no height construction, in addition to the game setting menu.
+## Note for existing users
+
+* This is a **separate mod** with a different id than the original. Do not enable both at the same time - disable the original one first.
+* Your existing settings are kept: same settings file, same options layout.
 
 ## Important Notes
 
 * This mod affects save games, as the road/bridges/tracks you've built are just there.
-* This mod is currently BETA and still needs more testing. FEEDBACKS are most welcomed(via Github issues).
 * Setting the maximum edge length to extreme values would possibly cause weird behaviors, e.g. extremely difficult to delete a piece of road. Please be cautious when playing with the maximum edge length.
+* Feedback and bug reports are welcome - please use the link below.
 
 ## Technical
 
 * Modified System: None
+
+## Credits
+
+* Original mod "ConfigurableElevatedRoad" (ModId 77597) and its implementation: Jimmyokok.
+* Compatibility maintenance for current game versions: jayzhu.
 
 	</LongDescription>
 	<!--Thumbnail-->
@@ -51,15 +55,24 @@ If you want anarchy around elevated road construction,this mod suits you. With t
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="" />
 	<!--Version of the mod-->
-	<ModVersion Value="1.0.2" />
+	<ModVersion Value="1.0.0" />
 	<!--Recommended version of the base game to use the mod-->
-	<GameVersion Value="1.1.*" />
+	<GameVersion Value="1.6.*" />
 	<!--Dependency for the mod, can be set multiple times-->
 	<Dependency Id="" />
-	<!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
+	<!--Change log for new version. Single line or multi line. Supports minimal markdown subset
+	     NOTE: this block is the *per-release* changelog shown on the mod page. Rewrite it for every upload.-->
 	<ChangeLog>	
-v1.0.2
-* Fixed a bug that leads to all sorts of weird behaviors when updating existing roads.
+v1.0.0
+* First release of this continuation, published as a NEW mod: the original mod (ModId 77597) is
+  unmaintained and cannot be updated from another account. Disable the original before enabling
+  this one - settings and features are identical.
+* Rebuilt against the game 1.6 assemblies. The mod no longer fails to load with
+  "MissingMethodException: AssetDatabase.LoadSettings".
+* Vanilla prefab data is left untouched unless "no pillar" mode is enabled, so newer vanilla
+  section/placement data is no longer overwritten.
+* Added support for the waterway-crossing sub-object placements added by newer game versions.
 	</ChangeLog>
-	<ExternalLink Type="github" Url="https://github.com/Jimmyokok/UnlimitedElevatedRoad" />
+	<!--Where players report bugs. Points at this fork's repository.-->
+	<ExternalLink Type="github" Url="https://github.com/zlh124/UnlimitedElevatedRoad" />
 </Publish>

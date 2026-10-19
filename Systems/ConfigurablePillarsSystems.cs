@@ -1,4 +1,4 @@
-﻿using Unity.Collections;
+using Unity.Collections;
 using Unity.Entities;
 using UnityEngine.Scripting;
 using Game;
@@ -31,6 +31,11 @@ namespace ConfigurableElevatedRoad.Systems
         private Dictionary<string, float> max_edge_length_dict;
         private Dictionary<string, float> max_steepness_dict;
         private Dictionary<string, float> min_edge_length_dict;
+
+        // Tracks whether the prefab section / sub-object buffers already carry our "no pillar"
+        // rewrite, so that they can be rebuilt one last time when the option is switched off
+        // (restoring vanilla pillars) and so that they are left untouched while it is off.
+        private bool m_BuffersRewritten;
 
         private void override_vanilla_value<T>(string prefab_name, ref Dictionary<string, T> cache_dict, ref T value, T override_value, bool save = true)
         {
@@ -171,6 +176,11 @@ namespace ConfigurableElevatedRoad.Systems
                 {
                     elem.m_Flags |= NetSectionFlags.FlipLanes | NetSectionFlags.FlipMesh;
                 }
+                // Added after v1.0.2: newer game versions carry a per-section "half length" flag.
+                if (netSectionInfo.m_HalfLength)
+                {
+                    elem.m_Flags |= NetSectionFlags.HalfLength;
+                }
                 int num = j << 1;
                 if (num >= @int.x && num <= @int.y)
                 {
@@ -200,6 +210,15 @@ namespace ConfigurableElevatedRoad.Systems
                 return;
             }
             need_update = false;
+
+            // The section / sub-object buffers below were reverse engineered from an older build of
+            // the game. Rewriting them is only required for "no pillar" mode (and for a single pass
+            // after it is switched off, so vanilla pillars come back without restarting the game).
+            // While no-pillar mode is off the buffers must be left exactly as the game built them:
+            // a blind rebuild drops data that newer game versions store there (NetSectionFlags.Hidden*,
+            // NetSectionFlags.HalfLength, the waterway-crossing sub-object placements, ...).
+            bool rewriteBuffers = Mod.setting.nopillar_enabled || m_BuffersRewritten;
+            m_BuffersRewritten = Mod.setting.nopillar_enabled;
             NativeArray<ArchetypeChunk> chunks = m_PrefabQuery.ToArchetypeChunkArray(Allocator.TempJob);
             try
             {
@@ -300,7 +319,7 @@ namespace ConfigurableElevatedRoad.Systems
                     NativeArray<NetData> nativeArray3 = archetypeChunk.GetNativeArray(ref _Game_Prefabs_NetData_RW_ComponentTypeHandle);
                     NativeArray<NetGeometryData> nativeArray4 = archetypeChunk.GetNativeArray(ref _Game_Prefabs_NetGeometryData_RW_ComponentTypeHandle);
                     NativeArray<PlaceableNetData> nativeArray5 = archetypeChunk.GetNativeArray(ref _Game_Prefabs_PlaceableNetData_RW_ComponentTypeHandle);
-                    if (nativeArray4.Length != 0)
+                    if (nativeArray4.Length != 0 && rewriteBuffers)
                     {
                         BufferAccessor<NetGeometrySection> bufferAccessor = archetypeChunk.GetBufferAccessor(ref _Game_Prefabs_NetGeometrySection_RW_BufferTypeHandle);
                         for (int j = 0; j < nativeArray4.Length; j++)
@@ -372,9 +391,13 @@ namespace ConfigurableElevatedRoad.Systems
                         }
                     }
                     BufferAccessor<SubObject> bufferAccessor4 = archetypeChunk.GetBufferAccessor(ref _Game_Prefabs_SubObject_RW_BufferTypeHandle);
-                    for (int num = 0; num < bufferAccessor4.Length; num++)
+                    for (int num = 0; rewriteBuffers && num < bufferAccessor4.Length; num++)
                     {
                         NetSubObjects component5 = m_PrefabSystem.GetPrefab<NetPrefab>(nativeArray2[num]).GetComponent<NetSubObjects>();
+                        if (component5 == null)
+                        {
+                            continue;
+                        }
                         DynamicBuffer<SubObject> dynamicBuffer3 = bufferAccessor4[num];
                         dynamicBuffer3.Clear();
                         for (int num2 = 0; num2 < component5.m_SubObjects.Length; num2++)
@@ -472,6 +495,24 @@ namespace ConfigurableElevatedRoad.Systems
                                     case NetObjectPlacement.EdgeEndOrNodeFixedSegment:
                                         subObject.m_Flags |= SubObjectFlags.EdgePlacement | SubObjectFlags.AllowCombine | SubObjectFlags.EndPlacement | SubObjectFlags.FixedPlacement;
                                         subObject.m_ParentIndex = netSubObjectInfo.m_FixedIndex;
+                                        break;
+                                    // Added after v1.0.2: newer game versions added waterway-crossing
+                                    // placements (bridges over rivers/sea) plus their negated variants.
+                                    case NetObjectPlacement.WaterwayCrossingNode:
+                                        subObject.m_Flags |= SubObjectFlags.WaterwayCrossing;
+                                        break;
+                                    case NetObjectPlacement.NotWaterwayCrossingNode:
+                                        subObject.m_Flags |= SubObjectFlags.NotWaterwayCrossing;
+                                        break;
+                                    case NetObjectPlacement.NotWaterwayCrossingEdgeMiddle:
+                                        subObject.m_Flags |= SubObjectFlags.EdgePlacement | SubObjectFlags.MiddlePlacement | SubObjectFlags.NotWaterwayCrossing;
+                                        if (EntityManager.HasComponent<PillarData>(subObject.m_Prefab))
+                                        {
+                                            value2.m_Flags |= GeometryFlags.MiddlePillars;
+                                        }
+                                        break;
+                                    case NetObjectPlacement.NotWaterwayCrossingEdgeEndsOrNode:
+                                        subObject.m_Flags |= SubObjectFlags.EdgePlacement | SubObjectFlags.AllowCombine | SubObjectFlags.NotWaterwayCrossing;
                                         break;
                                 }
                                 if (netSubObjectInfo.m_AnchorTop)

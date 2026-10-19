@@ -1,4 +1,4 @@
-﻿using Colossal.IO.AssetDatabase;
+using Colossal.IO.AssetDatabase;
 using Colossal.Logging;
 using ConfigurableElevatedRoad.Systems;
 using Game;
@@ -29,6 +29,13 @@ namespace ConfigurableElevatedRoad
             GameManager.instance.localizationManager.AddSource("en-US", new LocaleEN(setting));
             GameManager.instance.localizationManager.AddSource("zh-HANS", new LocaleCN(setting));
 
+            // NOTE: as of game 1.6 this overload gained a 4th optional parameter
+            // (LoadSettings(string name, object obj, object defaultObj, bool userSetting = false)).
+            // The 3-argument call below still binds to it and keeps the previous behaviour/defaults.
+            // Diagnostics: because the parameter list changed, an assembly that was compiled against
+            // an older Game.dll binds to a method signature that no longer exists and the mod fails to
+            // load with `MissingMethodException: void AssetDatabase.LoadSettings(string,object,object)`.
+            // That is why this mod has to be *rebuilt* against the current assemblies, not just copied.
             AssetDatabase.global.LoadSettings(nameof(ConfigurableElevatedRoad), setting, new Setting(this));
 
             var harmony = new Harmony(harmonyID);
