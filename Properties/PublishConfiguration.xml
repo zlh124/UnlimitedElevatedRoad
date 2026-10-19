@@ -6,10 +6,12 @@
 	<!--Name of the mod to display to players-->
 	<DisplayName Value="Configurable Elevated Road (Continued)" />
 	<!--Short description of the mod. PDX Mods limit: 1-200 characters (validated by ModPublisher).-->
-	<ShortDescription Value="Unofficial compatibility update of Configurable Elevated Road: pillar interval, edge length, steepness, no-pillar and no-height modes, all configurable in-game." />
+	<ShortDescription Value="Unofficial rebuild of Configurable Elevated Road for current game versions. Disable the original mod before enabling this one. Pillar interval, edge length, steepness, no-pillar/no-height modes." />
 	<!--Long description of the mod. Single line or multi line. Supports minimal markdown subset-->
 	<!--LongDescription Value="This is a long description" /-->
 	<LongDescription>
+**IMPORTANT: this mod cannot be installed together with the original "ConfigurableElevatedRoad".** It is the same mod republished under a new id, so disable/unsubscribe the original before enabling this one.
+
 **This is an unofficial continuation of "ConfigurableElevatedRoad" by Jimmyokok.** The original mod is no longer maintained and stopped loading after a game update. This version rebuilds it against the current game assemblies and keeps the same features, options layout and settings file. All credits for the original design and implementation go to the original author.
 
 ## Feature

@@ -7,8 +7,9 @@
 >
 > * This continuation is published under PDX Mods id **`164020`** ("Configurable Elevated Road (Continued)").
 > * The first release is version **1.0.0** (the code is upstream 1.0.2 plus the compatibility fixes below).
-> * **Do not enable both mods at the same time** — they are the same mod under two ids. Disable/unsubscribe
->   the original before enabling this one.
+> * **It cannot be installed alongside the original.** This is the same mod republished under a new id
+>   (identical assembly name), so disable/unsubscribe the original `ConfigurableElevatedRoad` before
+>   enabling this one.
 > * Your settings carry over: same settings file name, same options layout, same feature set.
 > * All credit for the original design and implementation stays with the original author.
 
